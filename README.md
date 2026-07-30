@@ -1,4 +1,6 @@
-# Astro Starter Kit: Minimal
+# print404-info
+
+Astro site for Print404.
 
 ```sh
 npm create astro@latest -- --template minimal
@@ -37,6 +39,19 @@ All commands are run from the root of the project, from a terminal:
 | `npm run preview`         | Preview your build locally, before deploying     |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
+
+## Cloudflare Pages
+
+Use the Cloudflare dashboard for automatic deploys on every Git change:
+
+1. Go to **Workers & Pages** in Cloudflare.
+2. Create a **Pages** project and connect this Git repository.
+3. Set the framework preset to **Astro**.
+4. Use build command `npm run build`.
+5. Use build output directory `dist`.
+6. Set Node.js version to `22.12.0` or newer.
+
+The `wrangler.toml` file records the Pages project name and build output directory for Cloudflare tooling.
 
 ## 👀 Want to learn more?
 
