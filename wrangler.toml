@@ -1,2 +1,2 @@
-name = "print404-info"
+name = "print404"
 pages_build_output_dir = "./dist"
