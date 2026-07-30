@@ -1,0 +1,160 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { gallery } from '../data';
+---
+
+<Layout title="Gallery — Print 404" active="Gallery">
+  <section class="page">
+    <div class="container">
+      <div class="page-head">
+        <h1>Gallery</h1>
+        <p>{gallery.length} photos from Print 404 — our shop, events, and tournaments. Click any photo to view it larger.</p>
+      </div>
+      <div class="gallery">
+        {gallery.map((g, i) => (
+          <figure class="gallery-item">
+            <button class="gallery-thumb" data-full={g.src} data-alt={g.alt} data-index={i} aria-label={`View photo ${i + 1}`}>
+              <img src={g.src} alt={g.alt} loading="lazy" width="800" height="600" />
+            </button>
+            {g.alt && <figcaption class="gallery-caption">{g.alt}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true">
+    <button class="lb-close" id="lbClose" aria-label="Close preview">&times;</button>
+    <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">&lsaquo;</button>
+    <div class="lb-stage">
+      <img id="lbImg" src="" alt="" />
+      <p class="lb-counter" id="lbCounter"></p>
+      <p class="lb-caption" id="lbCaption"></p>
+    </div>
+    <button class="lb-nav lb-next" id="lbNext" aria-label="Next">&rsaquo;</button>
+  </div>
+</Layout>
+
+<script is:inline define:vars={{ total: gallery.length }}>
+  (function () {
+    const items = Array.from(document.querySelectorAll('.gallery-thumb'));
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbCaption = document.getElementById('lbCaption');
+    const lbCounter = document.getElementById('lbCounter');
+    const lbClose = document.getElementById('lbClose');
+    const lbPrev = document.getElementById('lbPrev');
+    const lbNext = document.getElementById('lbNext');
+    let current = -1;
+
+    function open(index) {
+      current = index;
+      show(0);
+      lightbox.classList.add('open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      current = -1;
+    }
+    function show(delta) {
+      current = (current + delta + items.length) % items.length;
+      const item = items[current];
+      lbImg.src = item.dataset.full;
+      lbImg.alt = item.dataset.alt;
+      lbCaption.textContent = item.dataset.alt;
+      lbCounter.textContent = (current + 1) + ' / ' + total;
+    }
+
+    items.forEach((el, i) => el.addEventListener('click', () => open(i)));
+    lbClose.addEventListener('click', close);
+    lbPrev.addEventListener('click', () => show(-1));
+    lbNext.addEventListener('click', () => show(1));
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(-1);
+      if (e.key === 'ArrowRight') show(1);
+    });
+  })();
+</script>
+
+<style>
+  .gallery {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+  .gallery-item {
+    margin: 0; display: flex; flex-direction: column;
+    background: var(--c-surface);
+    border: 2px solid var(--c-text-strong);
+    box-shadow: 4px 4px 0 var(--c-border-strong);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .gallery-item:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--c-text-strong); }
+  .gallery-thumb {
+    padding: 0; margin: 0; border: 0; background: none; cursor: pointer;
+    display: block; overflow: hidden; aspect-ratio: 4 / 3;
+  }
+  .gallery-thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform .25s;
+  }
+  .gallery-item:hover .gallery-thumb img { transform: scale(1.04); }
+  .gallery-caption {
+    margin: 0; padding: 10px 12px;
+    font-size: 0.8rem; color: var(--c-text);
+    border-top: 1px dashed var(--c-border-strong);
+    line-height: 1.4;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 100;
+    display: none;
+    align-items: center; justify-content: center;
+    background: rgba(15,15,15,0.92);
+    padding: 24px;
+  }
+  .lightbox.open { display: flex; }
+  .lb-stage {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    max-width: 90%;
+  }
+  .lightbox img {
+    max-width: 90vw; max-height: 78vh; object-fit: contain;
+    border: 3px solid #fff;
+    box-shadow: 0 12px 50px rgba(0,0,0,0.6);
+  }
+  .lb-counter { color: #999; font-family: monospace; font-size: 0.85rem; margin: 0; }
+  .lb-close {
+    position: absolute; top: 16px; right: 24px;
+    background: none; border: 2px solid #fff; color: #fff;
+    font-size: 1.6rem; width: 44px; height: 44px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+    transition: background .15s;
+  }
+  .lb-close:hover { background: rgba(255,255,255,0.15); }
+  .lb-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: none; border: 2px solid #fff; color: #fff;
+    font-size: 2rem; width: 50px; height: 50px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+    transition: background .15s;
+  }
+  .lb-nav:hover { background: rgba(255,255,255,0.15); }
+  .lb-prev { left: 24px; }
+  .lb-next { right: 24px; }
+  .lb-caption { color: #ddd; font-family: monospace; font-size: 0.9rem; margin: 0; text-align: center; max-width: 600px; }
+
+  @media (max-width: 760px) {
+    .lb-nav { width: 40px; height: 40px; font-size: 1.5rem; }
+    .lb-prev { left: 10px; }
+    .lb-next { right: 10px; }
+  }
+</style>

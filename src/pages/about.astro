@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { business } from '../data';
+---
+
+<Layout title="About — Print 404" active="About">
+  <section class="page">
+    <div class="container about-inner">
+      <div>
+        <div class="page-head" style="text-align:left">
+          <h1>About Print 404</h1>
+        </div>
+        <p>
+          Print 404 is a local printing service and internet cafe located in
+          Purok 2, San Teodoro, Bunawan, Agusan del Sur. We serve students,
+          professionals, and the community with fast, affordable, and reliable
+          printing, photocopying, lamination, and computer rental services.
+        </p>
+        <p>
+          Whether you need a quick printout, ID pictures for a requirement, or a
+          computer to browse the web, our friendly staff is ready to help.
+        </p>
+        <a href={business.facebook} target="_blank" rel="noopener" class="btn">Visit our Facebook Page</a>
+      </div>
+      <img src="/logo.jpg" alt="Print 404" class="about-logo" width="240" height="185" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .about-inner {
+    display: grid; grid-template-columns: 1.4fr 1fr;
+    gap: 48px; align-items: center;
+  }
+  .about-inner p { color: var(--c-muted); margin: 0 0 16px; }
+  .about-inner .btn { margin-top: 8px; }
+  .about-logo {
+    filter: grayscale(1) contrast(1.05);
+    border: 3px solid var(--c-text-strong);
+    box-shadow: 6px 6px 0 var(--c-border-strong);
+    justify-self: end; object-fit: cover;
+  }
+  @media (max-width: 760px) {
+    .about-inner { grid-template-columns: 1fr; }
+    .about-logo { justify-self: center; }
+  }
+</style>

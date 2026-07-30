@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { business } from '../data';
+---
+
+<Layout title={`${business.name} — Printing & Internet Cafe`} active="Home">
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="dino-deco" aria-hidden="true">
+        <pre class="dino">{`
+              __
+             /o \\
+        _    /  |
+       (_)__/__ |
+            \\/
+`}</pre>
+      </div>
+      <img src="/logo.jpg" alt="Print 404 logo" class="hero-logo" width="140" height="108" />
+      <h1>PRINT <span class="accent">404</span></h1>
+      <p class="lead">{business.tagline}</p>
+      <div class="hero-actions">
+        <a href="/services" class="btn">View Services</a>
+        <a href="/gallery" class="btn btn-ghost">View Gallery</a>
+        <a href={business.mapsUrl} target="_blank" rel="noopener" class="btn btn-ghost">Get Directions</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="container">
+      <div class="quick-grid">
+        <a href="/services" class="quick-card">
+          <div class="quick-icon">🖨</div>
+          <h3>Services</h3>
+          <p>Printing, photocopy, lamination, internet & more</p>
+        </a>
+        <a href="/gallery" class="quick-card">
+          <div class="quick-icon">📸</div>
+          <h3>Gallery</h3>
+          <p>Photos from our shop and events</p>
+        </a>
+        <a href="/location" class="quick-card">
+          <div class="quick-icon">📍</div>
+          <h3>Location</h3>
+          <p>Find us in Bunawan, Agusan del Sur</p>
+        </a>
+        <a href="/about" class="quick-card">
+          <div class="quick-icon">ℹ</div>
+          <h3>About</h3>
+          <p>Learn more about Print 404</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 90px 20px 72px;
+    border-bottom: 2px solid var(--c-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-inner { display: flex; flex-direction: column; align-items: center; gap: 12px; position: relative; }
+  .hero-logo {
+    filter: grayscale(1) contrast(1.05);
+    border: 3px solid var(--c-text-strong);
+    object-fit: cover;
+  }
+  .hero h1 {
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    margin: 4px 0 0; letter-spacing: -0.02em; font-weight: 800;
+    color: var(--c-text-strong);
+  }
+  .lead { color: var(--c-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+
+  .dino-deco {
+    position: absolute; top: -10px; right: 0;
+    opacity: 0.18; pointer-events: none; user-select: none;
+  }
+  .dino { margin: 0; font-size: 8rem; line-height: 1; color: var(--c-text-strong); letter-spacing: -2px; }
+
+  .quick-grid {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .quick-card {
+    background: var(--c-surface);
+    border: 2px solid var(--c-text-strong);
+    padding: 26px 22px;
+    box-shadow: 4px 4px 0 var(--c-border-strong);
+    transition: transform .12s, box-shadow .12s, background .12s;
+  }
+  .quick-card:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--c-text-strong); background: var(--c-surface-2); }
+  .quick-icon { font-size: 1.9rem; margin-bottom: 10px; filter: grayscale(1); }
+  .quick-card h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--c-text-strong); text-transform: uppercase; letter-spacing: 0.03em; }
+  .quick-card p { margin: 0; color: var(--c-muted); font-size: 0.9rem; }
+
+  @media (max-width: 760px) {
+    .hero { padding: 64px 20px 56px; }
+    .dino { font-size: 5rem; }
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { business } from '../data';
+---
+
+<Layout title="Contact — Print 404" active="Contact">
+  <section class="page">
+    <div class="container contact-inner">
+      <div class="page-head">
+        <h1>Get in Touch</h1>
+        <p>Message us on Facebook for inquiries, price quotes, and orders.</p>
+      </div>
+      <div class="contact-actions">
+        <a href={business.facebook} target="_blank" rel="noopener" class="btn btn-lg">💬 Message on Facebook</a>
+        <a href={business.mapsUrl} target="_blank" rel="noopener" class="btn btn-ghost btn-lg">📍 View on Google Maps</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .contact-inner { text-align: center; }
+  .contact-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+</style>
