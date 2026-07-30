@@ -21,6 +21,16 @@ const { title = business.name, active = '' } = Astro.props;
   <meta property="og:description" content={business.tagline} />
   <meta property="og:image" content="/logo.jpg" />
   <meta property="og:type" content="website" />
+  <script is:inline>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('print404-theme');
+        var theme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      } catch (_) {}
+    })();
+  </script>
   <title>{title}</title>
 </head>
 <body>
@@ -30,11 +40,16 @@ const { title = business.name, active = '' } = Astro.props;
         <img src="/logo.jpg" alt="Print 404 logo" class="brand-logo" width="48" height="48" />
         <span class="brand-name">PRINT<span class="accent">404</span></span>
       </a>
-      <nav class="nav">
-        {navItems.map((item) => (
-          <a href={item.href} class={active === item.label ? 'active' : ''}>{item.label}</a>
-        ))}
-      </nav>
+      <div class="header-actions">
+        <nav class="nav">
+          {navItems.map((item) => (
+            <a href={item.href} class={active === item.label ? 'active' : ''}>{item.label}</a>
+          ))}
+        </nav>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme" aria-pressed="false">
+          <span class="theme-toggle-label">Dark</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -49,6 +64,30 @@ const { title = business.name, active = '' } = Astro.props;
     </div>
   </footer>
 
+  <script is:inline>
+    (function () {
+      var storageKey = 'print404-theme';
+      var root = document.documentElement;
+      var toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+
+      function setTheme(theme) {
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        localStorage.setItem(storageKey, theme);
+        toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+        toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+        var label = toggle.querySelector('.theme-toggle-label');
+        if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+      }
+
+      setTheme(root.dataset.theme === 'dark' ? 'dark' : 'light');
+      toggle.addEventListener('click', function () {
+        setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+    })();
+  </script>
+
   <style is:global>
     :root {
       --c-bg: #f7f7f7;
@@ -59,8 +98,20 @@ const { title = business.name, active = '' } = Astro.props;
       --c-muted: #6b6b6b;
       --c-border: #d8d8d8;
       --c-border-strong: #b5b5b5;
+      --c-grid: rgba(0, 0, 0, 0.025);
       --maxw: 1080px;
       font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+    }
+    :root[data-theme="dark"] {
+      --c-bg: #111111;
+      --c-surface: #1a1a1a;
+      --c-surface-2: #252525;
+      --c-text: #e5e5e5;
+      --c-text-strong: #ffffff;
+      --c-muted: #ababab;
+      --c-border: #333333;
+      --c-border-strong: #737373;
+      --c-grid: rgba(255, 255, 255, 0.045);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -74,8 +125,8 @@ const { title = business.name, active = '' } = Astro.props;
       display: flex;
       flex-direction: column;
       background-image:
-        linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px);
+        linear-gradient(var(--c-grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--c-grid) 1px, transparent 1px);
       background-size: 32px 32px;
     }
     main { flex: 1; }
@@ -110,6 +161,7 @@ const { title = business.name, active = '' } = Astro.props;
       border: 2px solid var(--c-text-strong);
     }
     .brand-name { font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; }
+    .header-actions { display: flex; align-items: center; gap: 18px; }
     .nav { display: flex; gap: 18px; align-items: center; }
     .nav a {
       color: var(--c-muted); font-size: 0.85rem; font-weight: 600;
@@ -121,6 +173,23 @@ const { title = business.name, active = '' } = Astro.props;
     }
     .nav a:hover { color: var(--c-text-strong); }
     .nav a.active { color: var(--c-text-strong); border-bottom-color: var(--c-text-strong); }
+    .theme-toggle {
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 2px solid var(--c-text-strong);
+      background: var(--c-surface);
+      color: var(--c-text-strong);
+      box-shadow: 2px 2px 0 var(--c-border-strong);
+      cursor: pointer;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: transform .08s, box-shadow .08s, background .15s;
+      flex: 0 0 auto;
+    }
+    .theme-toggle:hover { background: var(--c-surface-2); transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--c-border-strong); }
+    .theme-toggle:focus-visible { outline: 3px solid var(--c-border-strong); outline-offset: 3px; }
 
     /* Buttons */
     .btn {
@@ -171,6 +240,12 @@ const { title = business.name, active = '' } = Astro.props;
       }
       .brand { justify-content: center; }
       .brand-logo { width: 42px; height: 42px; }
+      .header-actions {
+        width: 100%;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+      }
       .nav {
         width: 100%;
         gap: 6px;
@@ -194,6 +269,7 @@ const { title = business.name, active = '' } = Astro.props;
         background: var(--c-text-strong);
         border-color: var(--c-text-strong);
       }
+      .theme-toggle { width: 100%; min-height: 42px; }
     }
 
     @media (max-width: 560px) {
