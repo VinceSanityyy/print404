@@ -7,7 +7,7 @@ import { business } from '../data';
   <section class="page">
     <div class="container about-inner">
       <div>
-        <div class="page-head" style="text-align:left">
+        <div class="page-head about-head">
           <h1>About Print 404</h1>
         </div>
         <p>
@@ -32,6 +32,7 @@ import { business } from '../data';
     display: grid; grid-template-columns: 1.4fr 1fr;
     gap: 48px; align-items: center;
   }
+  .about-head { text-align: left; }
   .about-inner p { color: var(--c-muted); margin: 0 0 16px; }
   .about-inner .btn { margin-top: 8px; }
   .about-logo {
@@ -39,9 +40,17 @@ import { business } from '../data';
     border: 3px solid var(--c-text-strong);
     box-shadow: 6px 6px 0 var(--c-border-strong);
     justify-self: end; object-fit: cover;
+    width: 240px;
+    max-width: 100%;
+    height: auto;
   }
   @media (max-width: 760px) {
-    .about-inner { grid-template-columns: 1fr; }
+    .about-inner { grid-template-columns: 1fr; gap: 28px; }
     .about-logo { justify-self: center; }
+  }
+  @media (max-width: 560px) {
+    .about-head { text-align: center; }
+    .about-inner p { font-size: 0.94rem; }
+    .about-logo { width: 190px; box-shadow: 4px 4px 0 var(--c-border-strong); }
   }
 </style>
